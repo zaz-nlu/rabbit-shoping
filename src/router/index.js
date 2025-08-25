@@ -1,11 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import About from "../views/About.vue";
+import Layout from "@/view/Layout.vue";
+import Home from "@/view/home/index.vue";
+import TopCategory from "@/view/category/index.vue";
+import subCategory from "@/view/category/sub.vue";
 
 // 路由配置
 const routes = [
-  { path: "/", component: Home },
-  { path: "/about", component: About },
+  // 一级路由布局
+  {
+    path: "/",
+    component: Layout,
+    children: [
+      { path: "/", component: Home },
+      { path: "/category/:id", component: TopCategory },
+      { path: "/category/sub/:id", component: subCategory },
+    ],
+  },
 ];
 
 const router = createRouter({
