@@ -20,7 +20,7 @@
               @click="categoryStore.hideMenu(item.id)"
               :to="`/category/sub/${sub.id}`"
             >
-              <img :src="sub.image" alt="" />
+              <img :src="sub.picture" alt="" />
               <p>{{ sub.name }}</p>
             </router-link>
           </li>

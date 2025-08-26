@@ -39,13 +39,29 @@
           </RouterLink>
         </li>
       </ul>
+
+      <ul v-if="currCategory && currCategory.brands">
+        <li class="brand" v-for="brand in currCategory.brands" :key="brand.id">
+          <RouterLink to="/">
+            <img :src="brand.picture" alt="" />
+            <div class="info">
+              <p class="place">
+                <i class="iconfont icon-dingwei"></i> {{ brand.place }}
+              </p>
+              <p class="name ellipsis">{{ brand.name }}</p>
+              <p class="desc ellipsis-2">{{ brand.desc }}</p>
+            </div>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useCategoryStore } from "@/stores/modules/category.js";
+import { findBrand } from "@/api/home";
 
 // 菜单
 const categoryStore = useCategoryStore();
@@ -79,6 +95,15 @@ const currCategory = computed(() => {
 });
 
 // 获取品牌数据
+const getBrand = async () => {
+  const data = await findBrand();
+  brand.brands = data.result;
+  console.log("brand =>", brand.brands);
+};
+
+onMounted(() => {
+  getBrand();
+});
 </script>
 
 <style scoped lang="less">
@@ -197,5 +222,26 @@ const currCategory = computed(() => {
 /* hover 显示弹层（这里建议用具体选择器，不要全局 hover） */
 .home-category:hover .layer {
   display: block;
+}
+
+li.brand {
+  height: 180px;
+}
+
+li.brand a {
+  align-items: flex-start;
+}
+
+li.brand a img {
+  width: 120px;
+  height: 160px;
+}
+
+li.brand .info p {
+  margin-top: 8px;
+}
+
+li.brand .info .place {
+  color: #999;
 }
 </style>
