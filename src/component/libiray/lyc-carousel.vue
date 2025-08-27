@@ -1,5 +1,9 @@
 <template>
-  <div class="xtx-carousel">
+  <div
+    class="xtx-carousel"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
     <!-- 轮播图容器 -->
     <ul class="carousel-body">
       <li
@@ -14,17 +18,24 @@
       </li>
     </ul>
     <!-- 上一张 -->
-    <a href="javascript:;" class="carousel-btn prev">
+    <a href="javascript:;" class="carousel-btn prev" @click="toggle('prev')">
       <i class="iconfont icon-angle-left"></i>
     </a>
     <!-- 下一张 -->
-    <a href="javascript:;" class="carousel-btn next">
+    <a href="javascript:;" class="carousel-btn next" @click="toggle('next')">
       <i class="iconfont icon-angle-right"></i>
     </a>
     <!-- 五个点 -->
     <div class="carousel-indicator">
       <!-- 利用active来激活点， -->
+      <!-- index和i控制当前展示的轮播图 -->
+      <!-- i是v-for遍历时候的下标,index是当前展示的轮播图下标,二者相等,则激活该点 -->
+      <!--  { id: 1, imgUrl: "banner1.png" },
+            { id: 2, imgUrl: "banner2.png" },
+            { id: 3, imgUrl: "banner3.png" } 这样的,index.value=0时,i===index,这样就可以加上active类,点被激活,然后
+             index.value===1时候 i1!===index.value i2===index,i3!==index.value, i===2这个点激活-->
       <span
+        @click="index = i"
         v-for="(item, i) in props.sliders"
         :key="item.id"
         :class="{ active: i === index }"
@@ -34,6 +45,7 @@
 </template>
 
 <script setup>
+import { onUnmounted, watch } from "vue";
 import { defineProps } from "vue";
 import { ref } from "vue";
 
@@ -43,8 +55,73 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  autoPlay: {
+    type: Boolean,
+    default: false,
+  },
+  duration: {
+    type: Number,
+    default: 3000,
+  },
 });
+// 定义一个响应式变量，用于记录当前展示的轮播图下标
 const index = ref(0);
+
+// 定义一个timer,,然后控制时间自动播放,这里是自动轮播的逻辑
+let timer = null;
+const autoPLAY = () => {
+  // 每次都清空一下
+  clearInterval(timer);
+  timer = setInterval(() => {
+    index.value++;
+    if (index.value > props.sliders.length - 1) {
+      index.value = 0;
+    }
+  }, props.duration);
+};
+// 时间开始播放的条件:1.autoplay为true,2.sliders得有数据
+// 因为要时刻观察sliders的变化,所以用watch
+watch(
+  () => props.sliders,
+  (newVal) => {
+    if (props.autoPlay && newVal.length) {
+      autoPLAY();
+    }
+  },
+  { immediate: true }
+);
+// 关于鼠标进入暂停自动轮播,离开开启自动播放
+const carousel = ref(null);
+const handleMouseEnter = () => {
+  clearInterval(timer);
+  timer = null;
+};
+const handleMouseLeave = () => {
+  if (props.autoPlay && props.sliders.length) {
+    autoPLAY();
+  }
+};
+
+// 关于用按钮控制轮播图
+const toggle = (direction) => {
+  clearInterval(timer);
+  timer = null;
+  if (direction === "prev") {
+    index.value--;
+    if (index.value < 0) {
+      index.value = props.sliders.length - 1;
+    }
+  } else {
+    index.value++;
+    if (index.value > props.sliders.length - 1) {
+      index.value = 0;
+    }
+  }
+};
+// 关于组件卸载时清理定时器
+onUnmounted(() => {
+  clearInterval(timer);
+});
 </script>
 
 <style scoped lang="less">

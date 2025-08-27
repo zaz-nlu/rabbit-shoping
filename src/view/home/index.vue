@@ -9,20 +9,23 @@
     </div>
   </div>
   <!-- 新鲜好物 -->
+  <HomeNew />
   <!-- 人气推荐 -->
+  <HomeHot />
 </template>
 
 <script setup>
 import { ref } from "vue";
 import HomeCategory from "./component/home-category.vue";
-
+import HomeNew from "./component/home-new.vue";
 import HomeBanner from "./component/home-banner.vue";
+import HomeHot from "./component/home-hot.vue";
 
 const name = ref("HomePage");
 </script>
 
 <style scoped>
-.container {
-  background-color: #dee2e6;
+:deep(.home-entry) {
+  background-color: red;
 }
 </style>

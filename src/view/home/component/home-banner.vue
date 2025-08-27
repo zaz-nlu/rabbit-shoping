@@ -1,7 +1,7 @@
 <template>
   <div class="home-banner">
     <!-- 给子组件标签加类名，作为父级样式作用的锚点 -->
-    <LycCarousel class="lyc-carousel" :sliders="bannerData" />
+    <LycCarousel auto-play class="lyc-carousel" :sliders="bannerData" />
   </div>
 </template>
 

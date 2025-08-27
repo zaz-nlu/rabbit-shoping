@@ -13,5 +13,6 @@ export default {
     app.component("LycCarousel", () =>
       import("@/component/libiray/lyc-carousel.vue")
     );
+    app.component("LycMore", () => import("@/component/libiray/lyc-more.vue"));
   },
 };
