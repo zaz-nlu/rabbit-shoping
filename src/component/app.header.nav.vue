@@ -48,6 +48,13 @@ console.log("id =>", categoryStore.$id, "keys =>", Object.keys(categoryStore));
 .navs {
   display: flex;
   gap: 25px;
+  /* 确保导航位于轮播等大组件之上，避免下拉被覆盖 */
+  position: relative;
+  z-index: 3000;
+}
+.menu-item {
+  /* 为每个菜单项建立定位上下文，使 .layer 的 absolute 参照该项 */
+  position: relative;
 }
 
 .navs li a {
@@ -74,6 +81,8 @@ console.log("id =>", categoryStore.$id, "keys =>", Object.keys(categoryStore));
   opacity: 0;
   box-shadow: 0 0 5px #ccc;
   transition: all 0.2s 0.1s; /* 属性时长 0.2s，延迟 0.1s */
+  /* 提升下拉层级，确保覆盖首页轮播等区域 */
+  z-index: 3050;
 }
 
 /* 下拉层内容布局 */
