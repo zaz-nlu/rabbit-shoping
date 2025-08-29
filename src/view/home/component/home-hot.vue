@@ -1,5 +1,5 @@
 <template>
-  <div class="home-hot">
+  <div ref="target" class="home-hot">
     <!-- 注意：HomePanel 的 subTitle 属性在模板里应写成 kebab-case：sub-title -->
     <HomePanel title="人气推荐" sub-title="热门商品推荐">
       <template #right>
@@ -9,7 +9,7 @@
       <ul class="goods-list" v-if="recommendList.length">
         <li v-for="item in recommendList" :key="item.id">
           <RouterLink to="/">
-            <img :src="item.picture" alt="" />
+            <img v-lazy="item.picture" alt="" />
             <p class="name ellipsis-2">{{ item.title }}</p>
             <p class="price">{{ item.alt }}</p>
           </RouterLink>
@@ -24,16 +24,11 @@
 import { ref, onMounted } from "vue";
 import HomePanel from "@/view/home/component/home-panel.vue";
 import LycMore from "@/component/libiray/lyc-more.vue";
+import { useLazyData } from "@/hooks";
 import { findHot } from "@/api/home";
 
-const recommendList = ref([]);
-const loadRecommend = async () => {
-  const data = await findHot();
-  recommendList.value = Array.isArray(data?.result) ? data.result : [];
-};
-
-// 组件挂载时拉取数据
-onMounted(loadRecommend);
+const target = ref(null);
+const recommendList = useLazyData(target, findHot);
 </script>
 
 <style scoped lang="less">

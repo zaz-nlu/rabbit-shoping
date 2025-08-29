@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: dev (Rabbit-Shop)",
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always", // 打开时显示终端输出
+        "panel": "dedicated" // 独立面板，不与其它任务混用
+      }
+    },
+    {
+      "label": "open: browser tabs",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "start http://localhost:5173 && start https://chat.openai.com"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "auto start workspace",
+      "dependsOn": ["npm: dev (Rabbit-Shop)", "open: browser tabs"],
+      "dependsOrder": "sequence",
+      "runOptions": {
+        "runOn": "folderOpen" // 打开 Rabbit-Shop 文件夹时自动执行
+      }
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="home-new">
+  <div ref="target" class="home-new">
     <HomePanel title="新鲜出炉,品质靠谱">
       <template #right>
         <LycMore path="/" />
@@ -8,7 +8,7 @@
       <ul class="goods-list" v-if="newList.length">
         <li v-for="item in newList" :key="item.id">
           <RouterLink to="/">
-            <img :src="item.picture" alt="" />
+            <img v-lazy="item.picture" alt="" />
             <p class="name ellipsis-2">{{ item.name }}</p>
             <p class="price"><i>¥</i>{{ item.price }}</p>
           </RouterLink>
@@ -25,14 +25,14 @@ import HomePanel from "@/view/home/component/home-panel.vue";
 import LycMore from "@/component/libiray/lyc-more.vue";
 import { findNew } from "@/api/home";
 import { ref, onMounted } from "vue";
+import { useLazyData } from "@/hooks";
 
-const newList = ref([]);
-const loadNew = async () => {
-  const data = await findNew();
-  newList.value = Array.isArray(data?.result) ? data.result : [];
-};
-
-onMounted(loadNew);
+// const loadNew = async () => {
+//   const data = await findNew();
+//   newList.value = Array.isArray(data?.result) ? data.result : [];
+// };
+const target = ref(null);
+const newList = useLazyData(target, findNew);
 </script>
 
 <style scoped>
