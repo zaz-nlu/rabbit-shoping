@@ -22,6 +22,10 @@ const router = createRouter({
   //使用哈希的路由模式
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // 始终滚动到顶部
+    return { top: 0 };
+  },
 });
 
 export default router;

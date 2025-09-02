@@ -32,7 +32,8 @@
    结构为： [div.xtx-bread-item][i.iconfont] 重复若干次，
    最后一个 .xtx-bread-item 后也会渲染一个 i 箭头。
    这里用“最后一个 .xtx-bread-item 的紧邻兄弟 i” 来选择并隐藏它。*/
-.xtx-bread > .xtx-bread-item:last-of-type + i {
+/* 结构调整后：箭头在 .xtx-bread-item 内，隐藏最后一个子项内部的箭头 */
+.xtx-bread > .xtx-bread-item:last-of-type i.iconfont {
   display: none;
 }
 </style>

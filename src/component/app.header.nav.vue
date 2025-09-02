@@ -5,19 +5,18 @@
       v-for="item in categoryStore.list"
       class="menu-item has-layer"
       :key="item.id"
-      @mouseenter="categoryStore.showMenu(item.id)"
-      @mouseleave="categoryStore.hideMenu(item.id)"
+      @mouseenter="activeId = item.id"
+      @mouseleave="activeId = null"
     >
-      <router-link
-        @click="categoryStore.hideMenu(item.id)"
-        :to="`/category/${item.id}`"
-        >{{ item.name }}</router-link
-      >
-      <div class="layer" :class="{ open: item.open }">
+      <router-link @click="activeId = null" :to="`/category/${item.id}`">{{
+        item.name
+      }}</router-link>
+      <!-- 改造：使用本组件的局部 state 控制展开，避免与吸附头共用时相互影响 -->
+      <div class="layer" :class="{ open: activeId === item.id }">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
             <router-link
-              @click="categoryStore.hideMenu(item.id)"
+              @click="activeId = null"
               :to="`/category/sub/${sub.id}`"
             >
               <img :src="sub.picture" alt="" />
@@ -31,15 +30,17 @@
 </template>
 
 <script setup>
+// 说明：两个头部（主头 & 吸附头）都会渲染本组件，
+// 如果用 Pinia 里的 item.open 共享展开状态，会导致两个导航同时展开。
+// 这里改为组件内局部状态 activeId，每个实例互不影响，天然互斥。
+import { ref } from "vue";
 import { useCategoryStore } from "@/stores/modules/category.js";
 
 const categoryStore = useCategoryStore();
+// 当前悬停的一级类目 id（局部 state）
+const activeId = ref(null);
 
-// 现在的问题是跳转的时候不会关闭二级类目，我们要定义一个布尔值open，放到一级菜单就是true，放到二级就是false
-// 1.pinia每个分类加上open数据
-// 2，pinia提供显示和隐藏函数
-// 3.在组件中调用这些函数
-console.log("id =>", categoryStore.$id, "keys =>", Object.keys(categoryStore));
+// 跳转时在模板中 @click 已置空 activeId，从而关闭下拉层
 </script>
 <style scoped lang="less">
 @xtxColor: #42b983; // 你项目的主题色
