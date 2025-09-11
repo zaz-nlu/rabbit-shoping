@@ -4,7 +4,7 @@
       <!-- 面包屑 -->
       <subBread />
       <!-- 筛选区 -->
-      <subFilter />
+      <subFilter @filter-change="filterChange" />
       <!-- 商品面板（排序+列表） -->
       <div class="good-list">
         <subSorted @sort-change="sortChange" />
@@ -87,12 +87,20 @@ onMounted(() => {
 // 1.更改排序组件的筛选数组，利用里面的条件重新请求数据
 const sortChange = (sortParams) => {
   finished.value = false;
+  // 把之前选择的也都加进去，所以要。。。用扩展运算符
   reqParams = { ...reqParams, ...sortParams };
   reqParams.page = 1;
   goodsList.value = [];
   getData();
 };
 // 2.更改筛选组件的筛选数据，利用里面的条件重新请求数据
+const filterChange = (filterParams) => {
+  finished.value = false;
+  reqParams = { ...reqParams, ...filterParams };
+  reqParams.page = 1;
+  goodsList.value = [];
+  getData();
+};
 </script>
 
 <style scoped lang="less">

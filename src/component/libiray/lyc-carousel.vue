@@ -12,9 +12,22 @@
         :key="i"
         :class="{ fade: i === index }"
       >
-        <RouterLink to="/">
+        <!-- 图片轮播图 -->
+        <RouterLink v-if="item.imgUrl" to="/">
           <img :src="item.imgUrl" alt="" />
         </RouterLink>
+        <!-- 新版本里面应该放商品列表 -->
+        <div v-else class="slider">
+          <RouterLink
+            v-for="goods in item"
+            :key="goods.id"
+            :to="`/product/${goods.id}`"
+          >
+            <img :src="goods.picture" alt="" />
+            <p class="name ellipsis">{{ goods.name }}</p>
+            <p class="price">￥{{ goods.price }}</p>
+          </RouterLink>
+        </div>
       </li>
     </ul>
     <!-- 上一张 -->
@@ -125,6 +138,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="less">
+@priceColor: #e93b3d;
 .xtx-carousel {
   width: 100%;
   height: 100%;
@@ -209,5 +223,33 @@ onUnmounted(() => {
       opacity: 1;
     }
   }
+}
+.slider {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 40px;
+}
+
+.slider a {
+  width: 240px;
+  text-align: center;
+}
+
+.slider a img {
+  padding: 20px;
+  width: 230px !important;
+  height: 230px !important;
+}
+
+.slider .name {
+  font-size: 16px;
+  color: #666;
+  padding: 0 40px;
+}
+
+.slider .price {
+  font-size: 16px;
+  color: @priceColor;
+  margin-top: 15px;
 }
 </style>

@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <!-- 销售属性 -->
+    <!-- 商品属性 -->
     <div class="item" v-for="sp in filterData.saleProperties" :key="sp.id">
       <div class="head">{{ sp.name }}：</div>
       <div class="body">
@@ -49,9 +49,11 @@ import { useRoute } from "vue-router";
 import { findSubCategoryFilter } from "@/api/category";
 import { ref, watch } from "vue";
 // 监听二级类目ID便变化获取筛选数据
+const emit = defineEmits(["filter-change"]);
 const route = useRoute();
 const filterData = ref(null);
 const filterLoading = ref(false);
+// id只要一变化就重新请求资源
 watch(
   () => route.params.id,
   (newVal) => {
@@ -62,7 +64,7 @@ watch(
         try {
           const res = await findSubCategoryFilter(route.params.id);
           res.result.brands.selectedBrand = null;
-          console.log("res =>", res.result);
+
           //  1.给每个品牌都加上全部
           res.result.brands.unshift({ id: null, name: "全部" }); //加null因为不参与筛选
           //  2.给每个选项加上全部
@@ -82,15 +84,38 @@ watch(
   },
   { immediate: true }
 );
+
+// 获取筛选后的数据，即将根据条件筛选的数据都写出来
+const getFilterParams = () => {
+  // 参考数据格式：{brandId：'',attrs:[{groupName:'颜色',propertyName:'蓝色'}]}发给后端的都是这种格式的数据
+  // 定义的对象就是你想获取的数据的格式
+  const obj = { brandId: null, attrs: [] };
+  // 如果你选中了
+  if (filterData.value.brands.selectedBrand) {
+    obj.brandId = filterData.value.brands.selectedBrand;
+  }
+  filterData.value.saleProperties.forEach((sp) => {
+    if (sp.selectedAttr) {
+      const prop = sp.properties.find((item) => item.id === sp.selectedAttr);
+      obj.attrs.push({ groupName: sp.name, propertyName: prop.name });
+    }
+  });
+  if (obj.attrs.length === 0) {
+    obj.attrs = null;
+  }
+  return obj;
+};
 // 1.记录当前选择的品牌
 const changeFilter = (id) => {
   if (filterData.value.brands.selectedBrand === id) return;
   filterData.value.brands.selectedBrand = id;
+  emit("filter-change", getFilterParams());
 };
 // 2.记录你选择的销售属性
 const changeProp = (sp, propId) => {
   if (sp.selectedAttr === propId) return;
   sp.selectedAttr = propId;
+  emit("filter-change", getFilterParams());
 };
 </script>
 

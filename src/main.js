@@ -12,12 +12,17 @@ import "normalize.css";
 // 自己定义的样式库
 import "@/assets/style/common.less";
 
+// 引入nav-ui的样式
+import naive from "naive-ui";
+
 const app = createApp(App);
 
+// pinia
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate); // 先给 pinia 挂插件
 
 app.use(pinia);
 app.use(UI);
 app.use(router);
+app.use(naive);
 app.mount("#app");

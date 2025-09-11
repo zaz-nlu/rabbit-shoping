@@ -3,6 +3,7 @@ import Layout from "@/view/Layout.vue";
 import Home from "@/view/home/index.vue";
 import TopCategory from "@/view/category/index.vue";
 import subCategory from "@/view/category/sub.vue";
+import GoodsDetail from "@/view/goods/index.vue";
 
 // 路由配置
 const routes = [
@@ -14,7 +15,16 @@ const routes = [
       { path: "/", component: Home },
       { path: "/category/:id", component: TopCategory },
       { path: "/category/sub/:id", component: subCategory },
+      { path: "/product/:id", component: GoodsDetail },
     ],
+  },
+  {
+    path: "/login",
+    component: () => import("@/view/login/index.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/component/app-404.vue"),
   },
 ];
 
