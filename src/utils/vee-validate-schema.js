@@ -1,3 +1,5 @@
+import { userAccountCheck } from "@/api/user";
+
 // 提供校验规则
 export const MySchema = {
   // 账号：必填，3-10 位字母或数字
@@ -8,11 +10,37 @@ export const MySchema = {
     return true;
   },
 
+  // 账号：异步校验，3-10 位字母或数字 + 唯一性
+  async accountApi(value) {
+    if (!value) return "请输入用户名";
+    if (!/^[a-zA-Z0-9]{3,10}$/.test(value)) {
+      return "用户名需为 3-10 位字母或数字";
+    }
+
+    try {
+      const res = await userAccountCheck(value);
+      const ok = res?.code === "1" || res?.code === 1 || res?.code === 200;
+      if (!ok) return res?.msg || res?.message || "服务器异常，请稍后重试";
+
+      // 关键：后端约定 valid=false 表示“可用”
+      if (res?.result?.valid === false) return true;
+      return "用户名已存在";
+    } catch {
+      return "网络异常，请稍后重试";
+    }
+  },
   // 密码：必填，6-18 位
   password(value) {
     if (value == null || value === "") return "请输入密码";
     if (String(value).length < 6) return "密码至少 6 位";
     if (String(value).length > 18) return "密码最多 18 位";
+    return true;
+  },
+
+  rePassword(value, { form }) {
+    if (!value) return "请再次输入密码";
+    if (!/^\S{6,24}$/.test(String(value))) return "密码需为 6-18 位";
+    if (value !== form.password) return "两次输入密码不一致";
     return true;
   },
 

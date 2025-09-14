@@ -185,10 +185,15 @@
 
     <!-- 其他第三方登录/链接占位 -->
     <div class="action">
-      <img
-        src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png"
-        alt=""
-      />
+      <a
+        href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback"
+      >
+        <img
+          src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png"
+          alt="QQ登录"
+        />
+      </a>
+
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -215,7 +220,7 @@ import { accountLogin, mobileLogin, getMobileCode } from "@/api/user.js";
 import { useUserStore } from "@/stores/modules/user.js";
 import { useMessage } from "naive-ui";
 import { useRouter, useRoute } from "vue-router";
-import { useInterval } from "@vueuse/core";
+import { useIntervalFn } from "@vueuse/core";
 
 // 登录方式：true=短信登录，false=账号登录
 const isMsgLogin = ref(false);
@@ -296,7 +301,14 @@ const login = async () => {
       nickname,
       token,
     } = res.result || {};
-    userStore.setUser({ id, account: acc, avatar, mobile, nickname, token });
+    userStore.setUserInfo({
+      id,
+      account: acc,
+      avatar,
+      mobile,
+      nickname,
+      token,
+    });
 
     const redirect = route.query.redirectUrl || "/";
     router.push(redirect);
@@ -312,12 +324,18 @@ const login = async () => {
 // ========== 倒计时逻辑 ==========
 // time>0 表示冷却中；useInterval 每秒减 1，减到 0 自动停止
 const time = ref(0);
-const { start, stop } = useInterval(() => {
-  if (time.value > 0) {
+const { pause: stop, resume: start } = useIntervalFn(
+  () => {
     time.value--;
-    if (time.value === 0) stop();
-  }
-}, 1000);
+    if (time.value <= 0) stop();
+  },
+  1000,
+  false
+);
+onMounted(() => {
+  // 组件挂载时确保计时器已停止
+  stop();
+});
 
 // 发送验证码（仅短信登录下可见）：
 // 1) 冷却中直接返回；2) 先本地校验手机号；3) getMobileCode 只传字符串；
@@ -361,6 +379,16 @@ onMounted(() => {
       form.password = "";
     }
   }, 400);
+});
+
+//  初始化QQ登录按钮
+
+onMounted(() => {
+  if (window.QC) {
+    window.QC.Login({
+      btnId: "qqLoginBtn", // 👈 跟你写的 span 的 id 对应
+    });
+  }
 });
 </script>
 

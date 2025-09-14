@@ -2,49 +2,50 @@ import axios from "axios";
 import { useUserStore } from "@/stores/modules/user.js";
 import router from "@/router";
 
-// 导出基准地址，原因:其他地方不是通过axios发请求的地方用上基准地址
-export const baseURL = "http://pcapi-xiaotuxian-front-devtest.itheima.net/";
-// 1.创建一个新的axios实例
+export const baseURL = "/api";
+
 const instance = axios.create({
   baseURL,
-  timeout: 5000, // 设置请求超时时间
+  timeout: 10000, // 建议稍微长点
 });
 
-// 2.请求拦截器,如果有token就携带token
+// 请求拦截：带 token
 instance.interceptors.request.use(
   (config) => {
     const userStore = useUserStore();
-    // 拦截业务逻辑
-    // 请求配置的修改
-    // 如果本地有token就在头部携带
-    const profile = userStore.profile;
-    // 用于判断是否有token
-    if (profile.token) {
-      config.headers.Authorization = `Bearer ${profile.token}`;
+    const token = userStore?.profile?.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (err) => {
-    return Promise.reject(err);
-  }
+  (err) => Promise.reject(err)
 );
 
-// 3.响应拦截器，剥离无效数据，处理token失效
+// 统一“业务成功”判断
+const isBizSuccess = (code) =>
+  code === 1 || code === "1" || code === 200 || code === "200";
+
+// 响应拦截：统一剥壳 + 业务码判断 + 401 处理
 instance.interceptors.response.use(
-  (response) => {
-    // 只返回data数据
-    return response.data;
+  (resp) => {
+    const data = resp.data ?? resp;
+    const code = data?.code;
+
+    // 有 code 字段时，按业务码判断
+    if (code !== undefined) {
+      if (isBizSuccess(code)) return data;
+      // 业务失败：直接 reject(data)，方便页面统一处理
+      return Promise.reject(data);
+    }
+    // 没有 code 字段（比如第三方接口）则原样返回
+    return data;
   },
   (error) => {
-    // 处理token失效
-    if (error.response && error.response.status === 401) {
+    if (error?.response?.status === 401) {
       const userStore = useUserStore();
-      // 清除无效用户信息
-      // 跳转到登录页吗
-      // 跳转需要传参（即当前路由地址）给登录页吗
-      //  想获得当前路由地址，在组件中可以通过this.$route获取
-      // 在这里可以通过router.currentRoute获取
-      userStore.setUser({});
+      // 注意：这里的方法名要和你 Pinia 里一致（你页面里用的是 setUserInfo）
+      userStore.setUserInfo?.({}) || userStore.setUser?.({});
       const fullPath = router.currentRoute.value.fullPath;
       router.push("/login?redirectUrl=" + encodeURIComponent(fullPath));
     }
@@ -52,7 +53,7 @@ instance.interceptors.response.use(
   }
 );
 
-// 4.导出一个函数，调用当前的axios实例发请求，返回值promise对象
+// 统一请求方法
 const request = (url, method, submitData) => {
   return instance({
     url,

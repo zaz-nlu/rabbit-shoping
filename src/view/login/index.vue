@@ -31,8 +31,14 @@
 import LoginHeader from "./component/login-header.vue";
 import LoginFooter from "./component/login-footer.vue";
 import LoginForm from "./component/login-form.vue";
+import { useRoute } from "vue-router";
+
+import { useUserStore } from "@/stores/modules/user";
 import { ref } from "vue";
+const route = useRoute();
 const activeName = ref("account");
+const store = useUserStore();
+store.setRedirectUrl(route.query.redirectUrl || "/");
 </script>
 
 <style scoped lang="less">

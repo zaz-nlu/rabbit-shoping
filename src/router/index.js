@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Layout from "@/view/Layout.vue";
 import Home from "@/view/home/index.vue";
 import TopCategory from "@/view/category/index.vue";
@@ -23,6 +23,10 @@ const routes = [
     component: () => import("@/view/login/index.vue"),
   },
   {
+    path: "/login/callback",
+    component: () => import("@/view/login/callback.vue"),
+  },
+  {
     path: "/:pathMatch(.*)*",
     component: () => import("@/component/app-404.vue"),
   },
@@ -30,7 +34,7 @@ const routes = [
 
 const router = createRouter({
   //使用哈希的路由模式
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     // 始终滚动到顶部

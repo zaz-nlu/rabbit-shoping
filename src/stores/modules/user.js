@@ -15,8 +15,17 @@ export const useUserStore = defineStore(
     const setUser = (payload) => {
       profile.value = payload;
     };
+    // 兼容旧代码：很多组件里用的是 setUserInfo，这里做一个别名
+    const setUserInfo = (payload) => {
+      setUser(payload);
+    };
+    const redirectUrl = ref("/");
 
-    return { profile, setUser };
+    const setRedirectUrl = (url) => {
+      redirectUrl.value = url;
+    };
+
+    return { profile, redirectUrl, setUser, setUserInfo, setRedirectUrl };
   },
   // 👇 第三个参数里开启持久化
   {

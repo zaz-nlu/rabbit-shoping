@@ -6,7 +6,7 @@
         <i class="iconfont icon-user"></i> {{ userStore.profile.account }}
       </li>
       <li v-if="userStore.profile.token">
-        <a href="javascript:;">退出登录</a>
+        <a @click="logout" href="javascript:;">退出登录</a>
       </li>
 
       <!-- 如果未登录 -->
@@ -35,6 +35,13 @@ import { useUserStore } from "@/stores/modules/user";
 import { useRouter } from "vue-router";
 //利用pinia存储用户信息,之后利用token来判断，能否登录
 const userStore = useUserStore();
+
+// 退出登录
+const router = useRouter();
+const logout = () => {
+  userStore.setUser({});
+  router.push("/login");
+};
 </script>
 
 <style scoped lang="less">

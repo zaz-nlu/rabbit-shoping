@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,6 +12,15 @@
   </head>
   <body>
     <div id="app"></div>
+    <!-- 先加载 QQ SDK -->
+    <script
+      src="https://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js"
+      data-appid="100556005"
+      data-redirecturi="http://www.corho.com:8080/#/login/callback"
+      charset="utf-8"
+    ></script>
+
+    <!-- 再启动你的应用 -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
