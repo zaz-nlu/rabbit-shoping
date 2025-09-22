@@ -221,6 +221,7 @@ import { useUserStore } from "@/stores/modules/user.js";
 import { useMessage } from "naive-ui";
 import { useRouter, useRoute } from "vue-router";
 import { useIntervalFn } from "@vueuse/core";
+import { useCartStore } from "@/stores/modules/cart.js";
 
 // 登录方式：true=短信登录，false=账号登录
 const isMsgLogin = ref(false);
@@ -269,6 +270,7 @@ watch(isMsgLogin, () => {
 });
 
 // ========== 登录提交逻辑 ==========
+const cartStore = useCartStore();
 const login = async () => {
   // 1) 统一先做表单校验（基于当前模式的 schema）
   const ok = await loginForm.value?.validate();
@@ -310,6 +312,12 @@ const login = async () => {
       token,
     });
 
+    // 合并购物车
+    try {
+      await cartStore.mergeCart();
+    } catch (e) {
+      message.warning("合并购物车失败，请稍后重试");
+    }
     const redirect = route.query.redirectUrl || "/";
     router.push(redirect);
     message.success("登录成功");
@@ -382,14 +390,15 @@ onMounted(() => {
 });
 
 //  初始化QQ登录按钮
+// 但是改成连接形式了所以不需要了
 
-onMounted(() => {
-  if (window.QC) {
-    window.QC.Login({
-      btnId: "qqLoginBtn", // 👈 跟你写的 span 的 id 对应
-    });
-  }
-});
+// onMounted(() => {
+//   if (window.QC) {
+//     window.QC.Login({
+//       btnId: "qqLoginBtn", // 👈 跟你写的 span 的 id 对应
+//     });
+//   }
+// });
 </script>
 
 <style scoped lang="less">

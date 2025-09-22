@@ -31,10 +31,12 @@ import callbackBind from "./component/callback-bind.vue";
 import callbackPatch from "./component/callback-patch.vue";
 import lycSpining from "@/component/libiray/lyc-spining.vue";
 import { useUserStore } from "@/stores/modules/user";
+import { useCartStore } from "@/stores/modules/cart";
+import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { userQQLogin } from "@/api/user";
 import router from "@/router";
-import { message } from "ant-design-vue";
+import { useMessage } from "naive-ui";
 
 //首先默认认为已经注册并且已经绑定
 // 通过QQ的API openId就是后台需要的unionId然后去进行灯笼裤
@@ -42,6 +44,9 @@ import { message } from "ant-design-vue";
 //如果失败，则要进行绑定
 const isBind = ref(true);
 const userStore = useUserStore();
+const cartStore = useCartStore();
+const message = useMessage();
+const route = useRoute();
 const unionId = ref(""); //第三方唯一标识
 // 确保QQ已经登录
 if (window.QC && window.QC.Login.check()) {
@@ -70,8 +75,15 @@ if (window.QC && window.QC.Login.check()) {
         nickname,
         token,
       });
-      // 跳转至之前想去的页面
-      router.replace(userStore.redirectUrl);
+      // 合并购物车
+      try {
+        await cartStore.mergeCart();
+        message.success("购物车合并成功");
+      } catch (e) {
+        message.warning("合并购物车失败，请稍后重试");
+      }
+      const redirect = route.query.redirectUrl || "/";
+      router.push(redirect);
       message.success("登录成功");
     } catch (err) {
       isBind.value = false;

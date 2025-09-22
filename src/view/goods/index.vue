@@ -49,13 +49,14 @@
             <!-- 提交按钮 -->
             <div>
               <n-button
+                @click="insertCart"
                 class="submit-button"
                 strong
                 secondary
                 round
                 type="primary"
               >
-                提交订单
+                加入购物车
               </n-button>
             </div>
           </div>
@@ -99,11 +100,14 @@ import lycNumberbox from "@/component/libiray/lyc-numberbox.vue";
 import goodsTab from "@/view/goods/component/goods-tab.vue";
 import goodsHot from "@/view/goods/component/goods-hot.vue";
 import goodsWarn from "@/view/goods/component/goods-warn.vue";
+import { useMessage } from "naive-ui";
+import { useCartStore } from "@/stores/modules/cart.js";
 import { useRoute } from "vue-router";
 import { findGoods } from "@/api/product.js";
 import { provide, ref, watch } from "vue";
 
 // 1.获取商品详情，进行渲染，先定义一个API
+const message = useMessage();
 const goods = ref(null);
 const loading = ref(false);
 const route = useRoute();
@@ -137,6 +141,7 @@ const useGoods = () => {
 };
 useGoods();
 // 这块利用了父子传值，将子组件的sku信息给父组件，之后父组件再交给购物车
+const currSku = ref(null);
 const changeSku = (skuInfo) => {
   console.log("skuInfo =>", skuInfo);
   if (skuInfo.skuId) {
@@ -144,10 +149,45 @@ const changeSku = (skuInfo) => {
     goods.value.stock = skuInfo.stock;
     goods.value.skuId = skuInfo.skuId;
   }
+  // 记录选择后的SKU，可能有数据也可能没有
+  currSku.value = skuInfo;
 };
 const count = ref(1);
 // 利用provide给组件提供goods
 provide("goods", goods);
+
+// 加入购物车
+const cartStore = useCartStore();
+// 购物车的逻辑，首先我们新建一个currSku，然后当你goodsSku组件选择完规格后
+// 会把选择的结果通过事件传递给父组件，然后父组件把结果放到currSku里面
+// 然后当你点击加入购物车按钮时，就把currSku里面的内容放到pinia里面
+const insertCart = async () => {
+  // 先看看父值是否被curSku接到了吗，没有就报错
+  if (!currSku.value || !currSku.value.skuId) {
+    return message.error("请选择完整规格");
+  }
+  const { skuId, specsText: attrsText, inventory: stock } = currSku.value;
+  const { id, name, price, mainPictures } = goods.value || {};
+  try {
+    await cartStore.insertCart({
+      id,
+      skuId,
+      name,
+      attrsText,
+      picture: mainPictures?.[0] || "",
+      price,
+      nowPrice: price,
+      selected: true,
+      stock,
+      count: count.value,
+      isEffective: true,
+    });
+    message.success("已加入购物车");
+  } catch (e) {
+    console.error("加入购物车失败:", e);
+    message.error("加入购物车失败，请稍后再试");
+  }
+};
 </script>
 
 <style scoped lang="less">

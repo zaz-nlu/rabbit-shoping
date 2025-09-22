@@ -80,6 +80,7 @@ import { onMounted, ref } from "vue";
 import { useMessage } from "naive-ui";
 import { userQQBindLogin } from "@/api/user";
 import { useUserStore } from "@/stores/modules/user";
+import { useCartStore } from "@/stores/modules/cart";
 import { useRouter } from "vue-router";
 
 // 补充计时 hook（与 login-form 中保持一致命名）
@@ -154,6 +155,7 @@ const submitting = ref(false);
 // 立即绑定
 const userStore = useUserStore();
 const router = useRouter();
+const cartStore = useCartStore();
 const onSubmit = async () => {
   if (submitting.value) return;
 
@@ -175,7 +177,7 @@ const onSubmit = async () => {
       mobile,
       nickname,
       token,
-    } = res.result || {};
+    } = res.result || {}; //将后端的值给这些字段
     // 3. 成功后将表单的信息给存储到 pinia
     userStore.setUserInfo({
       id,
@@ -185,6 +187,12 @@ const onSubmit = async () => {
       nickname,
       token,
     });
+    // 合并购物车
+    try {
+      await cartStore.mergeCart();
+    } catch (e) {
+      message.warning("合并购物车失败，请稍后重试");
+    }
     // 跳转至之前想去的页面
     router.replace(userStore.redirectUrl);
     message.success("登录成功");

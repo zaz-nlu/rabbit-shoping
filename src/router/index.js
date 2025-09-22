@@ -16,6 +16,7 @@ const routes = [
       { path: "/category/:id", component: TopCategory },
       { path: "/category/sub/:id", component: subCategory },
       { path: "/product/:id", component: GoodsDetail },
+      { path: "cart", component: () => import("@/view/cart/index.vue") },
     ],
   },
   {

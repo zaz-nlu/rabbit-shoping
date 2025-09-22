@@ -37,9 +37,10 @@ import { useLazyData } from "@/hooks";
 import HomeGoods from "./home-goods.vue";
 import HomePanel from "./home-panel.vue";
 import { ref } from "vue";
+import { RouterLink } from "vue-router";
 // 修复：api/home.js 未默认导出，使用具名导出 findProduct
 import { findProduct } from "@/api/home";
-// 修复：重复导入会导致 “Identifier 'LycMore' has already been declared” 报错
+// 修复：重复导入会导致 “Identifier 'LycMore' has已经被声明” 报错
 import LycMore from "@/component/libiray/lyc-more.vue";
 
 const target = ref(null);

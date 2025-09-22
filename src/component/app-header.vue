@@ -16,18 +16,14 @@
       </div>
 
       <!-- 购物车 -->
-      <div class="cart">
-        <a class="curr" href="#">
-          <i class="iconfont icon-cart"></i>
-          <em>2</em>
-        </a>
-      </div>
+      <app-header-cart />
     </div>
   </header>
 </template>
 
 <script setup>
 import appHeaderNav from "./app.header.nav.vue";
+import appHeaderCart from "@/component/app-header-cart.vue";
 </script>
 
 <style scoped lang="less">
@@ -57,8 +53,9 @@ ul {
   display: flex;
   align-items: center;
   color: #343a40;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial;
 }
 
 .app-header .container {

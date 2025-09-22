@@ -32,14 +32,20 @@
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
+import { useMessage } from "naive-ui";
+import { useCartStore } from "@/stores/modules/cart";
 import { useRouter } from "vue-router";
 //利用pinia存储用户信息,之后利用token来判断，能否登录
 const userStore = useUserStore();
+const cartStore = useCartStore();
+const message = useMessage();
 
 // 退出登录
 const router = useRouter();
 const logout = () => {
-  userStore.setUser({});
+  userStore.setUser({}); // 清空用户信息
+  cartStore.clearCart([]); // 清空购物车
+  message.success("退出登录成功");
   router.push("/login");
 };
 </script>

@@ -99,6 +99,7 @@ import { userQQPatchCode, userQQPatchLogin } from "@/api/user.js";
 import { message } from "ant-design-vue";
 import { useIntervalFn } from "@vueuse/core";
 import { useUserStore } from "@/stores/modules/user";
+import { useCartStore } from "@/stores/modules/cart";
 import { useRouter } from "vue-router";
 
 // 1.表单校验
@@ -178,6 +179,7 @@ const sendCode = async () => {
 };
 
 const submitting = ref(false);
+const cartStore = useCartStore();
 // 校验表单，返回布尔值
 // 立即提交的逻辑
 const onSubmit = async () => {
@@ -206,6 +208,13 @@ const onSubmit = async () => {
       nickname,
       token,
     });
+    // 合并购物车
+    try {
+      await cartStore.mergeCart();
+      message.success("购物车合并成功");
+    } catch (e) {
+      message.warning("合并购物车失败，请稍后重试");
+    }
     router.replace(userStore.redirectUrl);
     message.success("QQ信息注册成功");
   } catch (err) {
