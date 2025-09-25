@@ -315,6 +315,7 @@ const login = async () => {
     // 合并购物车
     try {
       await cartStore.mergeCart();
+      message.success("购物车合并成功");
     } catch (e) {
       message.warning("合并购物车失败，请稍后重试");
     }

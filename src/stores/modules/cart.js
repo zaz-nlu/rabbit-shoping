@@ -262,11 +262,13 @@ export const useCartStore = defineStore(
       validList.value.reduce((p, c) => p + (Number(c.count) || 0), 0)
     );
     // 总金额（返回数字，单位：元）
-    const validAmount = computed(() =>
-      validList.value.reduce(
-        (p, c) => p + (Number(c.nowPrice) || 0) * (Number(c.count) || 0),
-        0
-      )
+    const validAmount = computed(
+      () =>
+        validList.value.reduce((p, c) => {
+          const price = Math.round(Number(c.nowPrice) * 100); // 转为分
+          const count = Number(c.count) || 0;
+          return p + price * count;
+        }, 0) / 100 // 再转回元
     );
 
     // 下面是针对哪个购物车页面的数据列表

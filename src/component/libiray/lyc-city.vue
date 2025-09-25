@@ -1,7 +1,9 @@
 <template>
   <div class="xtx-city" ref="target" :class="{ open: visible }">
     <div class="select" @click="toggle">
-      <span v-if="!fullLocation" class="placeholder">请选择配送地址</span>
+      <span v-if="!fullLocation" class="placeholder">{{
+        placeholderText
+      }}</span>
       <span v-else class="value">{{ fullLocation }}</span>
       <i class="iconfont icon-angle-down"></i>
     </div>
@@ -32,6 +34,10 @@ const props = defineProps({
   fullLocation: {
     type: String,
     default: "",
+  },
+  placeholderText: {
+    type: String,
+    default: "请选择收货地址",
   },
 });
 const visible = ref(false);

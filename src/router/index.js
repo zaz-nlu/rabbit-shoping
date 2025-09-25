@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { useUserStore } from "@/stores/modules/user.js";
 import Layout from "@/view/Layout.vue";
 import Home from "@/view/home/index.vue";
 import TopCategory from "@/view/category/index.vue";
@@ -17,6 +18,10 @@ const routes = [
       { path: "/category/sub/:id", component: subCategory },
       { path: "/product/:id", component: GoodsDetail },
       { path: "cart", component: () => import("@/view/cart/index.vue") },
+      {
+        path: "/member/checkout",
+        component: () => import("@/view/member/pay/checkout.vue"),
+      },
     ],
   },
   {
@@ -41,6 +46,16 @@ const router = createRouter({
     // 始终滚动到顶部
     return { top: 0 };
   },
+});
+
+// 前置守卫
+router.beforeEach((to, from, next) => {
+  // 如果目标路由需要登录且用户未登录，且路径里带/member，则跳转到登录页
+  const userStore = useUserStore();
+  if (!userStore.profile.token && to.path.startsWith("/member")) {
+    return next("/login?redirectUrl=" + encodeURIComponent(to.fullPath));
+  }
+  next();
 });
 
 export default router;

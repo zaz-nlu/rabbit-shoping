@@ -1,7 +1,9 @@
 <template>
   <n-message-provider>
     <n-dialog-provider>
-      <router-view />
+      <n-modal-provider>
+        <router-view />
+      </n-modal-provider>
     </n-dialog-provider>
   </n-message-provider>
 </template>

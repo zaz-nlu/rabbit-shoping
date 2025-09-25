@@ -141,7 +141,7 @@
           <span class="red">{{ cartStore.validTotal }}</span>
           件商品，已选择{{ cartStore.selectedProductTotal }} 件，商品合计：
           <span class="red">&yen;{{ cartStore.selectedAmount }}</span>
-          <NButton type="primary">下单结算</NButton>
+          <NButton @click="checkout()" type="primary">下单结算</NButton>
         </div>
       </div>
 
@@ -159,6 +159,7 @@ import lycBreadItem from "@/component/libiray/lyc-bread-item.vue";
 import lycCheckbox from "@/component/libiray/lyc-checkbox.vue";
 import { useCartStore } from "@/stores/modules/cart.js";
 import lycNumbox from "@/component/libiray/lyc-numberbox.vue";
+import { useRouter } from "vue-router";
 import cartSku from "./component/cart-sku.vue";
 
 const cartStore = useCartStore();
@@ -220,6 +221,27 @@ const selectedDelete = (isClearing) => {
 // 更新购物车商品数量
 const updateSkuInfo = (oldSkuId, newSku) => {
   cartStore.updateCartSku(oldSkuId, newSku);
+};
+
+// 结算
+const router = useRouter();
+const checkout = () => {
+  // 1. 判断是否有选中的商品,且提示
+  // 2.弹出确定框，提示下单结算需要登录
+  // 3.使用导航守卫，如果没有登录，跳转到登录页面
+  if (cartStore.selectedProductTotal === 0) {
+    message.warning("请至少选择一件商品");
+    return;
+  }
+  dialog.info({
+    title: "提示",
+    content: "请登录后下单结算",
+    positiveText: "去登录",
+    maskClosable: false,
+    async onPositiveClick() {
+      router.push("/member/checkout");
+    },
+  });
 };
 </script>
 
