@@ -13,14 +13,110 @@ const routes = [
     path: "/",
     component: Layout,
     children: [
-      { path: "/", component: Home },
-      { path: "/category/:id", component: TopCategory },
-      { path: "/category/sub/:id", component: subCategory },
-      { path: "/product/:id", component: GoodsDetail },
+      // 使用相对路径，确保在 Layout 的 <router-view> 中渲染
+      { path: "", component: Home },
+      { path: "category/:id", component: TopCategory },
+      { path: "category/sub/:id", component: subCategory },
+      { path: "product/:id", component: GoodsDetail },
       { path: "cart", component: () => import("@/view/cart/index.vue") },
       {
-        path: "/member/checkout",
-        component: () => import("@/view/member/pay/checkout.vue"),
+        path: "/pay/callback",
+        component: () => import("@/view/member/pay/result.vue"),
+      },
+      // 会员中心布局路由
+      {
+        path: "member",
+        component: () => import("@/view/member/layout.vue"),
+        children: [
+          // 个人中心（默认页）
+          {
+            path: "",
+            redirect: "/member/home",
+          },
+          {
+            path: "home",
+            component: () => import("@/view/member/home/index.vue"),
+          },
+          // 我的账户
+          {
+            path: "message",
+            component: () => import("@/view/member/message/index.vue"),
+          },
+          {
+            path: "profile",
+            component: () => import("@/view/member/profile/index.vue"),
+          },
+          {
+            path: "security",
+            component: () => import("@/view/member/security/index.vue"),
+          },
+          {
+            path: "address",
+            component: () => import("@/view/member/address/index.vue"),
+          },
+          {
+            path: "points",
+            component: () => import("@/view/member/points/index.vue"),
+          },
+          {
+            path: "footprint",
+            component: () => import("@/view/member/footprint/index.vue"),
+          },
+          {
+            path: "invite",
+            component: () => import("@/view/member/invite/index.vue"),
+          },
+          {
+            path: "lottery",
+            component: () => import("@/view/member/lottery/index.vue"),
+          },
+          // 交易管理
+          {
+            path: "order",
+            component: () => import("@/view/member/order/index.vue"),
+          },
+          {
+            path: "order/:id",
+            component: () => import("@/view/member/order/component/detail.vue"),
+          },
+          {
+            path: "pay",
+            component: () => import("@/view/member/pay/index.vue"),
+          },
+          {
+            path: "checkout",
+            component: () => import("@/view/member/pay/checkout.vue"),
+          },
+          {
+            path: "coupon",
+            component: () => import("@/view/member/coupon/index.vue"),
+          },
+          {
+            path: "giftcard",
+            component: () => import("@/view/member/giftcard/index.vue"),
+          },
+          {
+            path: "review",
+            component: () => import("@/view/member/review/index.vue"),
+          },
+          {
+            path: "service",
+            component: () => import("@/view/member/service/index.vue"),
+          },
+          // 我的收藏
+          {
+            path: "collect/goods",
+            component: () => import("@/view/member/collect/goods.vue"),
+          },
+          {
+            path: "collect/topic",
+            component: () => import("@/view/member/collect/topic.vue"),
+          },
+          {
+            path: "collect/brand",
+            component: () => import("@/view/member/collect/brand.vue"),
+          },
+        ],
       },
     ],
   },

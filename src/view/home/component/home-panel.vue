@@ -1,5 +1,4 @@
-<script setup lang="ts">
-import LycMore from "@/component/libiray/lyc-more.vue";
+<script setup>
 import { defineProps } from "vue";
 
 const props = defineProps({

@@ -20,3 +20,20 @@ export const editAddressAPI = (form) => {
 export const submitOrderAPI = (params) => {
   return request("/member/order", "post", params);
 };
+
+// 获取订单详情
+export const getOrderDetailAPI = (id) => {
+  return request(`/member/order/${id}`, "get");
+};
+
+/**
+ * 获取订单列表
+ * @param {object} params - 参考接口文档
+ * @param {number} params.page - 页码
+ * @param {number} params.pageSize - 每页条数
+ * @param {number} params.orderState - 订单状态：0-全部 1-待付款 2-待发货 3-待收货 4-待评价 5-已完成 6-已取消
+ * @returns
+ */
+export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
+  return request("/member/order", "get", { page, pageSize, orderState });
+};

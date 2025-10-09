@@ -182,9 +182,9 @@ const onSubmit = async () => {
     userStore.setUserInfo({
       id,
       account: acc,
-      avatar,
+      avatar: avatar || avatar.value, // 优先使用后端返回的头像，否则使用QQ头像
       mobile,
-      nickname,
+      nickname: nickname || nickname.value, // 优先使用后端返回的昵称，否则使用QQ昵称
       token,
     });
     // 合并购物车

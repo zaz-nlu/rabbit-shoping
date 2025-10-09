@@ -127,9 +127,10 @@ const router = useRouter();
 const order = ref({ goods: [], summary: {} });
 const getOrder = async () => {
   const res = await createOrderAPI();
-  console.log("[createOrderAPI res]", res); // 打印完整返回
-  console.log("[userAddresses]", res.result.userAddresses); // 打印地址列表
-  console.log("[sample address]", res.result.userAddresses?.[0]); // 打印第一条地址
+
+  console.log("[createOrderAPI res]", res);
+  console.log("[goods]", res.result?.goods);
+  console.log("[goods.length]", res.result?.goods?.length);
   order.value = res.result;
   reqParams.goods = res.result.goods.map((item) => ({
     skuId: item.skuId,

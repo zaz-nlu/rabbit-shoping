@@ -21,6 +21,9 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate); // 先给 pinia 挂插件
 
+// mockjs
+import "@/mock/index.js";
+
 app.use(pinia);
 app.use(UI);
 app.use(router);

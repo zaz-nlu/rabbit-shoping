@@ -2,18 +2,21 @@
   <nav class="app-topnav">
     <ul>
       <!-- 如果已登录 -->
-      <li v-if="userStore.profile.token">
-        <i class="iconfont icon-user"></i> {{ userStore.profile.account }}
-      </li>
-      <li v-if="userStore.profile.token">
-        <a @click="logout" href="javascript:;">退出登录</a>
-      </li>
-
+      <template v-if="userStore.profile.token">
+        <li>
+          <router-link to="/member">
+            <i class="iconfont icon-user"></i> {{ userStore.profile.account }}
+          </router-link>
+        </li>
+        <li>
+          <a @click="logout" href="javascript:;">退出登录</a>
+        </li>
+      </template>
       <!-- 如果未登录 -->
-      <li v-else>
-        <router-link to="/login">请先登录</router-link>
-        <router-link to="/register">免费注册</router-link>
-      </li>
+      <template v-else>
+        <li><router-link to="/login">请先登录</router-link></li>
+        <li><router-link to="/register">免费注册</router-link></li>
+      </template>
 
       <!-- 公共部分 -->
       <li><router-link to="/help">帮助中心</router-link></li>
@@ -30,17 +33,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
 import { useMessage } from "naive-ui";
 import { useCartStore } from "@/stores/modules/cart";
 import { useRouter } from "vue-router";
-//利用pinia存储用户信息,之后利用token来判断，能否登录
+
+// 利用pinia存储用户信息,之后利用token来判断，能否登录
 const userStore = useUserStore();
 const cartStore = useCartStore();
 const message = useMessage();
-
-// 退出登录
 const router = useRouter();
 const logout = () => {
   userStore.setUser({}); // 清空用户信息

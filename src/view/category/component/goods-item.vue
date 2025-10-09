@@ -19,38 +19,58 @@ const props = defineProps({
 
 <style scoped lang="less">
 .goods-item {
-  display: block;
-  width: 220px;
-  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* 100%宽度，由父容器控制实际宽度 */
+  padding: 15px;
   text-align: center;
+  box-sizing: border-box;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  text-decoration: none; /* 去除链接下划线 */
 }
 
 /* hover 效果 */
 .goods-item:hover {
-  /* 原来 .hoverShadow() 混入，替换成具体阴影样式 */
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .goods-item img {
   width: 160px;
   height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block; /* 防止图片底部空隙 */
 }
 
 .goods-item p {
+  width: 100%;
   padding-top: 10px;
+  margin: 0;
 }
 
 .goods-item .name {
   font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
 }
 
 .goods-item .desc {
   color: #999;
-  height: 29px;
+  height: 40px; /* 固定高度，保持对齐 */
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden; /* 隐藏溢出文本 */
 }
 
 .goods-item .price {
-  color: #f40; /* 原来的 @priceColor，手动写一个变量值 */
-  font-size: 20px;
+  color: #f40;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 5px;
 }
 </style>
