@@ -76,10 +76,6 @@ const routes = [
             component: () => import("@/view/member/order/index.vue"),
           },
           {
-            path: "order/:id",
-            component: () => import("@/view/member/order/component/detail.vue"),
-          },
-          {
             path: "pay",
             component: () => import("@/view/member/pay/index.vue"),
           },

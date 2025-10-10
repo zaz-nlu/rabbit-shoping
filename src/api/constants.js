@@ -12,3 +12,13 @@ export const topCategory = [
   "运动",
   "杂货",
 ];
+
+// 取消订单的原因
+export const cancelOrderReason = [
+  "商品质量问题",
+  "商品与描述不符",
+  "商品缺货",
+  "商品损坏",
+  "商品过期",
+  "商品变质",
+];

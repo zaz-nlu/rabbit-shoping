@@ -22,7 +22,7 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; /* 100%宽度，由父容器控制实际宽度 */
+  width: 220px; /* 固定宽度，确保 flex 布局正常 */
   padding: 15px;
   text-align: center;
   box-sizing: border-box;

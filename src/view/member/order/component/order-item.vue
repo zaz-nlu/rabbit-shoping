@@ -14,6 +14,7 @@
       <a
         class="del"
         v-if="[5, 6].includes(order.orderState)"
+        @click="$emit('deleteOrder', order)"
         href="javascript:;"
         >删除</a
       >
@@ -68,24 +69,25 @@
           v-if="order.orderState === 1"
           class="link"
           href="javascript:;"
-          @click="handleCancel"
+          @click="$emit('cancelOrder', order)"
           >取消订单</a
         >
 
-        <!-- 待发货 -->
+        <!-- 待发货：只能等商家发货，不能确认收货（该死的后端限制） -->
         <a
           v-if="order.orderState === 2"
           class="link"
           href="javascript:;"
           @click="$router.push(`/product/${order.skus[0].spuId}`)"
-          >查看详情</a
         >
+          查看详情
+        </a>
 
         <!-- 待收货 -->
         <NButton
           v-if="order.orderState === 3"
           type="warning"
-          @click="handleConfirm"
+          @click="$emit('confirmOrder', order)"
         >
           确认收货
         </NButton>
@@ -93,7 +95,7 @@
           v-if="order.orderState === 3"
           class="link"
           href="javascript:;"
-          @click="handleViewDetail"
+          @click="emit('on-view-logistics', order)"
           >查看物流</a
         >
 
@@ -132,6 +134,13 @@ import { NButton } from "naive-ui";
 import { computed } from "vue";
 import { usePayTime } from "@/hooks/index.js";
 import { onMounted } from "vue";
+
+const emit = defineEmits([
+  "cancelOrder",
+  "deleteOrder",
+  "confirmOrder",
+  "on-view-logistics",
+]);
 
 const props = defineProps({
   order: {
@@ -175,22 +184,6 @@ const orderStateColor = computed(
 const payTypeText = computed(
   () => payTypeMap[props.order.payType] || "在线支付"
 );
-
-// 操作方法
-const handlePay = () => {
-  console.log("立即付款", props.order.id);
-  // TODO: 跳转到支付页面
-};
-
-const handleViewDetail = () => {
-  console.log("查看详情", props.order.id);
-  // TODO: 跳转到订单详情页
-};
-
-const handleCancel = () => {
-  console.log("取消订单", props.order.id);
-  // TODO: 调用取消订单接口
-};
 
 const { start, timeText } = usePayTime();
 

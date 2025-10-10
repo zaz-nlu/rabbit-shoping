@@ -20,7 +20,15 @@
       <!-- 只有一个列表，根据 active 自动取不同数据 -->
       <div class="order-list">
         <!-- 订单列表 order-item -->
-        <orderItem v-for="item in orderList" :key="item.id" :order="item" />
+        <orderItem
+          @cancelOrder="cancelOrder"
+          @deleteOrder="deleteOrder1"
+          @confirmOrder="confirmOrder"
+          @on-view-logistics="viewLogistics"
+          v-for="item in orderList"
+          :key="item.id"
+          :order="item"
+        />
         <!-- 底部分页 -->
         <div class="list-footer">
           <n-pagination
@@ -36,19 +44,30 @@
         </div>
       </div>
     </n-card>
+    <!-- 取消原因组件 -->
+    <orderCancel ref="orderCancelRef" @cancel-success="getOrderList" />
+    <!-- 物流信息组件 -->
+    <orderLogistics ref="orderLogisticsRef" />
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { NCard, NTabs, NTabPane } from "naive-ui";
+import { NCard, NTabs, NTabPane, useMessage, useDialog } from "naive-ui";
 import orderItem from "./component/order-item.vue";
 import { findOrderList } from "@/api/pay";
 import { reactive } from "vue";
 import lycSpining from "@/component/libiray/lyc-spining.vue";
+import orderCancel from "./component/order-cancel.vue";
+import orderLogistics from "./component/order-logistics.vue";
+import { deleteOrderAPI } from "@/api/pay";
+import { confirmOrderAPI } from "@/api/pay";
 
 const active = ref("all"); // 当前筛选：all/unpaid/unshipped/...
 const loading = ref(false);
+// 在顶部调用 naive-ui 的 hooks
+const message = useMessage();
+const dialog = useDialog();
 
 // 获取数据
 const total = ref(0);
@@ -107,6 +126,55 @@ const handleTabChange = (tabName) => {
   reqParams.page = 1;
   // 重新获取数据
   getOrderList();
+};
+
+// 组件实例，代替了order-cancel组件，可以使用order-cancel的全部功能
+// 我们在子组件使用defineExpose暴露方法，在父组件使用ref引用组件实例
+// 这样我们在父组件也可以使用子组件中的方法
+const orderCancelRef = ref(null);
+const cancelOrder = (order) => {
+  console.log("🔄 取消订单:", order);
+  orderCancelRef.value.open(order.id);
+};
+
+//删除操作
+const deleteOrder1 = (order) => {
+  // 调用 naive-ui 对话框确认删除
+  dialog.warning({
+    title: "删除确认",
+    content: "确定要删除这个订单吗？此操作不可恢复！",
+    positiveText: "确定删除",
+    negativeText: "取消",
+    onPositiveClick: async () => {
+      // 调用删除接口
+      await deleteOrderAPI(order.id);
+      // 删除成功后刷新列表
+      getOrderList();
+      message.success("删除成功");
+    },
+  });
+};
+
+//确认收货
+const confirmOrder = (order) => {
+  dialog.warning({
+    title: "确认收货",
+    content: "确定要确认收货吗？",
+    positiveText: "确定收货",
+    negativeText: "取消",
+    onPositiveClick: async () => {
+      await confirmOrderAPI(order.id);
+      // 确认收货后刷新列表
+      getOrderList();
+      message.success("确认收货成功");
+    },
+  });
+};
+
+// 查看物流
+const orderLogisticsRef = ref(null);
+const viewLogistics = (order) => {
+  orderLogisticsRef.value.open(order.id);
 };
 </script>
 

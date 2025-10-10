@@ -37,3 +37,23 @@ export const getOrderDetailAPI = (id) => {
 export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
   return request("/member/order", "get", { page, pageSize, orderState });
 };
+
+// 取消订单API函数
+export const cancelOrderAPI = ({ orderId, cancelReason }) => {
+  return request(`/member/order/${orderId}/cancel`, "put", { cancelReason });
+};
+
+/* 删除订单API函数 */
+export const deleteOrderAPI = (orderId) => {
+  return request(`/member/order`, "delete", { ids: [orderId] });
+};
+
+// 确认收货API函数
+export const confirmOrderAPI = (orderId) => {
+  return request(`/member/order/${orderId}/receipt`, "put");
+};
+
+// 查询物流API
+export const queryLogisticsAPI = (orderId) => {
+  return request(`/member/order/${orderId}/logistics`, "get");
+};
