@@ -1,80 +1,37 @@
-# rabbit-shoping
-小兔鲜电商项目
-# 🐰 Rabbit-Shop —— 小兔鲜电商项目
+在线电商项目📖 项目简介
+这是一个基于 Vue 3 + Vite 构建的现代化前端电商系统，采用组件化开发模式，实现了完整的电商业务流程。项目涵盖商品展示、用户管理、购物流程等核心功能，注重代码规范和用户体验优化。🛠 技术栈
+框架：Vue 3 (Composition API)
+构建工具：Vite 4.x
+路由管理：Vue Router 4.x
+状态管理：Pinia
+HTTP 请求：Axios
+UI 组件：Element Plus / 自定义组件
+样式方案：SCSS / CSS3
+代码规范：ESLint + Prettier
+包管理器：pnpm
+✨ 核心功能🏠 首页模块
 
-## 📖 项目简介
-小兔鲜电商项目是一个基于 **Vue 3 + Vite** 搭建的前端商城系统。  
-主要用于练习和掌握前端工程化、组件化开发、接口对接以及电商业务场景的实现。  
+轮播图展示，支持自动切换与手动操作
+热门商品推荐，动态数据渲染
+商品分类导航，多级分类展示
+🛍️ 商品模块
 
-项目包含 **首页展示、商品分类、商品详情、购物车、用户登录注册** 等核心功能模块，适合作为学习 Vue3 和电商业务开发的练习项目。  
+分类列表页：支持多条件筛选、排序功能
+商品详情页：图片预览、规格选择、库存展示
+搜索功能：关键词搜索，搜索历史记录
+👤 用户模块
 
----
+用户注册/登录（表单验证）
+Token 鉴权机制
+个人中心（订单查看、地址管理）
+🛒 购物车模块
 
-## 🛠 技术栈
-- **框架**：Vue 3 (Composition API)
-- **构建工具**：Vite
-- **路由**：Vue Router
-- **状态管理**：Pinia
-- **UI & 样式**：自定义样式 + TailwindCSS（可选）
-- **包管理**：npm / pnpm
-- **版本管理**：Git + GitHub
+商品加入购物车
+购物车数量修改、删除
+购物车数据持久化（localStorage）
+实时计算总价
+📦 订单模块
 
----
-
-## 📂 目录结构
-Rabbit-Shop
-├── public # 静态资源
-├── src
-│ ├── assets # 图片、图标等静态资源
-│ ├── components # 通用组件
-│ ├── views # 页面级组件
-│ ├── router # 路由配置
-│ ├── stores # Pinia 状态管理
-│ ├── App.vue # 根组件
-│ └── main.js # 入口文件
-├── index.html # 项目入口 HTML
-├── package.json # 项目依赖配置
-└── vite.config.js # Vite 配置
-
-
----
-
-## 🚀 启动项目
-```bash
-# 克隆项目
-
-git clone https://github.com/你的账号/rabbit-shop.git
-
-# 进入项目目录
-cd rabbit-shop
-
-# 安装依赖
-npm install
-
-# 启动开发环境
-npm run dev
-
-# 打包生产环境
-npm run build
-
----
-## 🚀 功能模块
-首页轮播、推荐
-
- 商品分类列表
-
- 商品详情页
-
- 用户注册 & 登录
-
- 购物车功能
-
- 订单结算（待实现）
-
- 用户中心（待实现）
-# Vue 3 + Vite
-
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
-
+订单确认页面
+地址选择与管理
+订单提交与支付流程
